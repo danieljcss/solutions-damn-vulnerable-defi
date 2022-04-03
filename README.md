@@ -25,6 +25,6 @@ Damn Vulnerable DeFi is a set of challenges to hack implementations of DeFi in E
 
 All Solidity code, practices and patterns in this repository are DAMN VULNERABLE and for educational purposes only.
 
-Originally created by [@tinchoabbate](https://twitter.com/tinchoabbate)
+The challenge was originally created by [@tinchoabbate](https://twitter.com/tinchoabbate)
 
 DO NOT USE IN PRODUCTION.
