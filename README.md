@@ -21,6 +21,18 @@ Damn Vulnerable DeFi is a set of challenges to hack implementations of DeFi in E
 11. [Backdoor](/contracts/backdoor/)
 12. [Climber](/contracts/climber/)
 
+To test the solution of any of this challenges it suffices to run
+
+```bash
+yarn <challenge-name>
+```
+
+or
+
+```bash
+npm <challenge-name>
+```
+
 ### Disclaimer
 
 All Solidity code, practices and patterns in this repository are DAMN VULNERABLE and for educational purposes only.
