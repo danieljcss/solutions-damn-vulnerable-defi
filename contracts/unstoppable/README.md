@@ -58,7 +58,7 @@ fallback() external payable {
 
 ### The ETH case and selfdestruct
 
-This is not enough to solve the vulnerability in any case since for Solidity 0.8.0, we can still send ETH funds to a contract without passing though this fallback function. This can be done using a `selfdestruct(address)` method on a different contract that we call `Attacker`. This method deletes `Attacker` from the blockchain and sends all its funds to the selected `address`. An example of this `Attacker` contract can be found [here](/Attacker.sol).
+This is not enough to solve the vulnerability in any case since for Solidity 0.8.0, we can still send ETH funds (or any native token on a different EVM compatible network) to a contract without passing through this fallback function. This can be done using the `selfdestruct(address)` method on a different contract, that we call `Attacker`. This method deletes `Attacker` from the blockchain and sends all its funds to the selected `address`. An example of this `Attacker` contract can be found [here](/Attacker.sol).
 
 Therefore, to make the `UnstoppableLender` contract safe for ETH use, we would need to modify its logic. There are several possible solutions depending on what we want to achieve. If we just want to lend funds that are provided via the `depositTokens` function, we need to redefine some variables in the `flashLoan` function
 
