@@ -2,7 +2,7 @@
 <img src="cover.svg" height="120px">
 </p>
 
-In this repository we provide **_explained solutions_** to the challenges of Damn Vulnerable DeFi.
+In this repository we provide **_explained solutions_** to the challenges of Damn Vulnerable DeFi v2.
 
 Damn Vulnerable DeFi is a set of challenges to hack implementations of DeFi in Ethereum. It features flash loans, price oracles, governance, NFTs, lending pools, smart contract wallets, timelocks, and more!
 
@@ -30,7 +30,7 @@ yarn <challenge-name>
 or
 
 ```bash
-npm <challenge-name>
+npm run <challenge-name>
 ```
 
 ### Disclaimer
