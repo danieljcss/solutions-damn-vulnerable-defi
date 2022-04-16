@@ -53,7 +53,7 @@ If we think for a moment, `target` can be any contract we want, and the call of 
 
 First we create an instance of both the pool and the DVT token to their respective addresses. Then we prepare the data to call the `approve` function for the maximum value of a `uint256` variable. We call `flashLoan` with the corresponding target to be the DVT token address and the data we defined before. Here we could create a contract that just pays back the borrowed amount, but since the borrowed amount is allowed to be 0 we just simplify it by asking 0, and then we do not need to payback anything. Once this function is executed, `TrustLenderPool.sol` has given us the approval to take all its tokens, and that is what we do in the last line.
 
-To run the attack we complete the code in [truster.challenge.js](../../test/truster/truster.challenge.js) by adding
+To run the attack we complete the code in [`truster.challenge.js`](../../test/truster/truster.challenge.js) by adding
 
 ```javascript
 it("Exploit", async function () {
