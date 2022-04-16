@@ -37,7 +37,7 @@ function withdraw() external {
 }
 ```
 
-Notice that anyone that deposits value in this pool is able to retrieve it afterwards. An attacker can profit from this by using the borrowed money to deposit it in the pool. In this case, the total balance of the pool will not change and the flashloan will be finalized. However, when this is done, the attacker being the depositer now has the access to the funds via the withdraw function. And that is it. Let us now implement the attacker contract in [AttackerSideEntrance.sol]('./AttackerSideEntrance.sol')
+Notice that anyone that deposits value in this pool is able to retrieve it afterwards. An attacker can profit from this by using the borrowed money to deposit it in the pool. In this case, the total balance of the pool will not change and the flashloan will be finalized. However, when this is done, the attacker being the depositer now has the access to the funds via the withdraw function. And that is it. Let us now implement the attacker contract in [AttackerSideEntrance.sol](./AttackerSideEntrance.sol)
 
 ```solidity
 contract AttackerSideEntrance {
